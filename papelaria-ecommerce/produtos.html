@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Papelaria</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-5">Produtos</h2>
+
+        <!-- Lista de Produtos -->
+        <div id="produtos" class="row">
+            <!-- Produtos serão inseridos dinamicamente aqui -->
+        </div>
+
+        <!-- Lista de produtos no carrinho -->
+        <div id="carrinhoDiv" class="mt-4">
+            <h4>Produtos no Carrinho:</h4>
+            <ul id="carrinhoLista" class="list-group">
+                <!-- Itens do carrinho serão adicionados aqui -->
+            </ul>
+        </div>
+
+        <button class="btn btn-primary mt-4" id="finalizarCompraBtn" onclick="finalizarCompra()">Finalizar Compra</button>
+    </div>
+
+    <script>
+        // Dados de exemplo de produtos
+        const produtos = [
+            { id: 1, nome: 'Caneta Azul', preco: 3.50, descricao: 'Caneta azul para escrita', avaliacao: 4.5 },
+            { id: 2, nome: 'Caderno', preco: 15.00, descricao: 'Caderno capa dura, 100 folhas', avaliacao: 4.8 },
+            { id: 3, nome: 'Lápis', preco: 2.00, descricao: 'Lápis HB para escrever', avaliacao: 4.0 },
+            { id: 4, nome: 'Régua', preco: 5.00, descricao: 'Régua de madeira, 30cm', avaliacao: 4.2 },
+            { id: 5, nome: 'Borrachas', preco: 1.50, descricao: 'Borrachas de boa qualidade', avaliacao: 4.3 },
+            { id: 6, nome: 'Mochila Escolar', preco: 80.00, descricao: 'Mochila com várias divisórias', avaliacao: 4.9 },
+            { id: 7, nome: 'Marcadores', preco: 6.00, descricao: 'Marcadores em diversas cores', avaliacao: 4.6 },
+            { id: 8, nome: 'Tesoura', preco: 7.00, descricao: 'Tesoura de aço com cabo ergonômico', avaliacao: 4.7 },
+            { id: 9, nome: 'Agenda 2024', preco: 20.00, descricao: 'Agenda com capa em couro', avaliacao: 4.9 },
+            { id: 10, nome: 'Clips', preco: 1.00, descricao: 'Clips para papel', avaliacao: 4.2 }
+        ];
+
+        // Carrinho de compras (inicialmente vazio)
+        const carrinho = [];
+
+        // Função para adicionar produto ao carrinho
+        function adicionarAoCarrinho(produto) {
+            if (!carrinho.some(item => item.id === produto.id)) {
+                carrinho.push(produto);
+                atualizarCarrinho();
+            } else {
+                alert('Este produto já está no carrinho!');
+            }
+        }
+
+        // Função para renderizar os produtos na tela
+        function renderizarProdutos() {
+            const produtosDiv = document.getElementById('produtos');
+            produtosDiv.innerHTML = ''; // Limpa a lista antes de adicionar os novos produtos
+
+            produtos.forEach(produto => {
+                const produtoDiv = document.createElement('div');
+                produtoDiv.classList.add('col-md-4', 'mb-4');
+                produtoDiv.innerHTML = `
+                    <div class="card">
+                        <img src="https://via.placeholder.com/150" class="card-img-top" alt="${produto.nome}">
+                        <div class="card-body">
+                            <h5 class="card-title">${produto.nome}</h5>
+                            <p><strong>Preço:</strong> R$ ${produto.preco.toFixed(2)}</p>
+                            <p><strong>Descrição:</strong> ${produto.descricao}</p>
+                            <p><strong>Avaliação:</strong> ${produto.avaliacao} estrelas</p>
+                            <button class="btn btn-success" onclick='adicionarAoCarrinho(${JSON.stringify(produto)})'>Adicionar ao Carrinho</button>
+                        </div>
+                    </div>
+                `;
+                produtosDiv.appendChild(produtoDiv);
+            });
+        }
+
+        // Função para atualizar a exibição do carrinho
+        function atualizarCarrinho() {
+            const carrinhoLista = document.getElementById('carrinhoLista');
+            carrinhoLista.innerHTML = '';
+
+            carrinho.forEach(item => {
+                const itemLi = document.createElement('li');
+                itemLi.classList.add('list-group-item');
+                itemLi.textContent = item.nome;
+                carrinhoLista.appendChild(itemLi);
+            });
+        }
+
+        // Função para finalizar a compra e enviar os produtos para a página de pagamento
+        function finalizarCompra() {
+            if (carrinho.length === 0) {
+                alert('Você precisa adicionar pelo menos um produto ao carrinho!');
+                return;
+            }
+
+            const carrinhoJSON = encodeURIComponent(JSON.stringify(carrinho));
+            window.location.href = `pagamento.html?carrinho=${carrinhoJSON}`;
+        }
+
+        renderizarProdutos();
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

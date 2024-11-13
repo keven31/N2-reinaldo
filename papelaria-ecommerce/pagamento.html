@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento - Papelaria</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-5">Tela de Pagamento</h2>
+
+        <!-- Exibição dos produtos do carrinho -->
+        <div id="produtosCarrinho">
+            <!-- Produtos serão inseridos aqui -->
+        </div>
+
+        <h4 class="mt-4">Forma de Pagamento</h4>
+
+        <!-- Formulário de pagamento -->
+        <form id="formPagamento">
+            <div class="form-group">
+                <label for="bandeiraCartao">Bandeira do Cartão</label>
+                <select class="form-control" id="bandeiraCartao" required>
+                    <option value="Visa">Visa</option>
+                    <option value="Mastercard">Mastercard</option>
+                    <option value="American Express">American Express</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="numeroCartao">Número do Cartão</label>
+                <input type="text" class="form-control" id="numeroCartao" required>
+            </div>
+            <div class="form-group">
+                <label for="dataExpiracao">Data de Expiração</label>
+                <input type="month" class="form-control" id="dataExpiracao" required>
+            </div>
+            <div class="form-group">
+                <label for="codigoSeguranca">Código de Segurança</label>
+                <input type="text" class="form-control" id="codigoSeguranca" required>
+            </div>
+            <button type="button" class="btn btn-success mt-4" onclick="finalizarPagamento()">Finalizar</button>
+        </form>
+
+        <!-- Exibição do resumo da compra após finalizar -->
+        <div id="resumoCompra" class="mt-4" style="display:none;">
+            <h4>Resumo da Compra</h4>
+            <ul id="listaProdutos" class="list-group">
+                <!-- Produtos serão listados aqui -->
+            </ul>
+            <p><strong>Forma de pagamento:</strong> <span id="formaPagamento"></span></p>
+            <p><strong>Total da compra:</strong> R$ <span id="totalCompra"></span></p>
+            <p><strong>Compra realizada com sucesso!</strong></p>
+        </div>
+    </div>
+
+    <script>
+        // Recupera os dados do carrinho da URL
+        const params = new URLSearchParams(window.location.search);
+        const carrinho = JSON.parse(decodeURIComponent(params.get('carrinho')));
+
+        // Exibe os produtos no carrinho
+        const produtosCarrinhoDiv = document.getElementById('produtosCarrinho');
+        let totalCompra = 0;
+
+        carrinho.forEach(produto => {
+            const produtoDiv = document.createElement('div');
+            produtoDiv.classList.add('mb-2');
+            produtoDiv.innerHTML = `
+                <p><strong>${produto.nome}</strong> - R$ ${produto.preco.toFixed(2)}</p>
+            `;
+            produtosCarrinhoDiv.appendChild(produtoDiv);
+            totalCompra += produto.preco;
+        });
+
+        // Função para finalizar o pagamento
+        function finalizarPagamento() {
+            const bandeira = document.getElementById('bandeiraCartao').value;
+            const numeroCartao = document.getElementById('numeroCartao').value;
+            const dataExpiracao = document.getElementById('dataExpiracao').value;
+            const codigoSeguranca = document.getElementById('codigoSeguranca').value;
+
+            if (!numeroCartao || !dataExpiracao || !codigoSeguranca) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+
+            // Exibe o resumo da compra
+            document.getElementById('formPagamento').style.display = 'none';
+            document.getElementById('resumoCompra').style.display = 'block';
+
+            // Preenche o resumo
+            const listaProdutos = document.getElementById('listaProdutos');
+            carrinho.forEach(produto => {
+                const item = document.createElement('li');
+                item.classList.add('list-group-item');
+                item.textContent = `${produto.nome} - R$ ${produto.preco.toFixed(2)}`;
+                listaProdutos.appendChild(item);
+            });
+
+            document.getElementById('formaPagamento').textContent = `${bandeira} (Cartão de Crédito)`;
+            document.getElementById('totalCompra').textContent = totalCompra.toFixed(2);
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+body {
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    color: #333;
+}
+
+.card {
+    border: 1px solid #ccc;
+}
+
+.btn {
+    font-size: 1.1rem;
+}
